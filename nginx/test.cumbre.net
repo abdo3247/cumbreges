@@ -1,30 +1,30 @@
-upstream sequana-backend-odoo {
-    server 127.0.0.1:28069;
+upstream test-cumbre-backend-odoo {
+    server 127.0.0.1:28068;
 }
-upstream sequana-odoochat {
-        server 127.0.0.1:28072;
+upstream test-cumbre-odoochat {
+        server 127.0.0.1:28071;
 }
 
 #HTTP Server
 server {
-    if ($host = sequana.quilsoft.com) {
+    if ($host = test.cumbre.net) {
         return 301 https://$host$request_uri;
     } # managed by Certbot
 
     listen 80;
-    server_name sequana.quilsoft.com;
-    return 301 https://sequana.quilsoft.com$request_uri;
+    server_name test.cumbre.net;
+    return 301 https://test.cumbre.net$request_uri;
 }
 
 #HTTPS Server
 server {
    listen 443 ssl http2;
-   server_name sequana.quilsoft.com;
+   server_name test.cumbre.net;
 
     #SSL parameters
     #ssl on;
-    #ssl_certificate /etc/letsencrypt/live/sequana.quilsoft.com/fullchain.pem; # managed by Certbot
-    #ssl_certificate_key /etc/letsencrypt/live/sequana.quilsoft.com/privkey.pem; # managed by Certbot
+    #ssl_certificate /etc/letsencrypt/live/test.cumbre.net/fullchain.pem; # managed by Certbot
+    #ssl_certificate_key /etc/letsencrypt/live/test.cumbre.net/privkey.pem; # managed by Certbot
     keepalive_timeout 24h;
 
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
@@ -35,8 +35,8 @@ server {
     add_header Strict-Transport-Security max-age=15768000;
 
     #Log paths declaration
-    access_log /var/log/nginx/sequana.quilsoft.access.log;
-    error_log /var/log/nginx/sequana.quilsoft.error.log;
+    access_log /var/log/nginx/test-cumbre.access.log;
+    error_log /var/log/nginx/test-cumbre.error.log;
 
     #Proxy configuration
     proxy_connect_timeout 720s;
@@ -53,7 +53,7 @@ server {
 
     #Odoo related locations
     location / {
-        proxy_pass  http://sequana-backend-odoo;
+        proxy_pass  http://test-cumbre-backend-odoo;
         proxy_redirect off;
     }
 
@@ -61,10 +61,10 @@ server {
        proxy_cache_valid 200 90m;
        proxy_buffering    on;
        expires 864000;
-       proxy_pass http://sequana-backend-odoo;
+       proxy_pass http://test-cumbre-backend-odoo;
     }
     location /longpolling {
-        proxy_pass http://sequana-odoochat;
+        proxy_pass http://test-cumbre-odoochat;
     }
 }
 
